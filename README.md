@@ -1,12 +1,12 @@
 # EBCI RAG Knowledge Admin
 
-This static page manages the EBCI Agent knowledge APIs.
+This static page opens the same-origin management UI hosted by the EBCI Agent service.
 
 Usage:
 
 1. Open the page from GitHub Pages or directly from `index.html`.
 2. Enter the deployed Agent base URL.
-3. Enter the access credential.
-4. Upload files, watch document status, and run retrieval tests.
+3. The browser opens `/admin/knowledge` on that service.
+4. Enter the access credential there, then upload files, watch document status, and run retrieval tests.
 
-The access credential is stored only in `sessionStorage` for the current browser session and is sent to the service in the standard authorization header.
+The static page does not call the management APIs directly. This avoids browser cross-origin preflight restrictions for protected API requests.
