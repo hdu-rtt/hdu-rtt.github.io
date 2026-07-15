@@ -13,17 +13,18 @@
           <p class="eyebrow">EBCI Agent</p>
           <h1>RAG 知识库管理</h1>
         </div>
+        <button id="logout-button" class="ghost-button" type="button" hidden>清除会话</button>
       </header>
 
       <section class="panel auth-panel" aria-labelledby="auth-title">
         <div class="section-title">
           <div>
             <p class="eyebrow">Access</p>
-            <h2 id="auth-title">打开管理入口</h2>
+            <h2 id="auth-title">连接管理接口</h2>
           </div>
-          <p id="entry-status" class="status-text" aria-live="polite"></p>
+          <p id="connection-status" class="status-text" aria-live="polite"></p>
         </div>
-        <form id="entry-form" class="entry-grid">
+        <form id="auth-form" class="auth-grid">
           <label class="field">
             <span>服务地址</span>
             <input
@@ -35,12 +36,113 @@
               required
             />
           </label>
-          <button class="primary-button" type="submit">打开</button>
+          <label class="field">
+            <span>访问密钥</span>
+            <input id="access-key-input" name="access_key" type="password" autocomplete="off" required />
+          </label>
+          <label class="field">
+            <span>操作者</span>
+            <input id="operator-input" name="operator" type="text" autocomplete="off" placeholder="可选" />
+          </label>
+          <button class="primary-button" type="submit">连接</button>
         </form>
-        <p class="muted entry-note">
-          管理界面会在服务域名下打开，以便浏览器按同源请求访问接口。
-        </p>
       </section>
+
+      <div id="workspace" hidden>
+        <section class="metrics-grid" aria-label="状态概览">
+          <article class="metric-card">
+            <span class="metric-label">文档总数</span>
+            <strong id="metric-total">0</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">处理中</span>
+            <strong id="metric-processing">0</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">失败</span>
+            <strong id="metric-failed">0</strong>
+          </article>
+        </section>
+
+        <section class="panel upload-panel" aria-labelledby="upload-title">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">Ingestion</p>
+              <h2 id="upload-title">上传知识文件</h2>
+            </div>
+            <p class="muted">文件校验、解析和索引由服务端执行。</p>
+          </div>
+
+          <div class="upload-grid">
+            <section id="drop-zone" class="drop-zone" tabindex="0" role="button">
+              <p class="drop-title">拖拽文件到这里</p>
+              <p class="muted">或点击选择文件，支持多文件上传。</p>
+              <div class="button-row">
+                <label class="ghost-button" for="file-input">选择文件</label>
+                <button id="upload-button" class="primary-button" type="button">上传</button>
+              </div>
+              <input id="file-input" type="file" multiple hidden />
+            </section>
+
+            <section class="queue-box" aria-labelledby="queue-title">
+              <div class="mini-head">
+                <h3 id="queue-title">待上传文件</h3>
+                <span id="queue-count" class="mono">0</span>
+              </div>
+              <ul id="file-queue" class="simple-list"></ul>
+            </section>
+          </div>
+          <p id="upload-feedback" class="status-text" aria-live="polite"></p>
+        </section>
+
+        <section class="content-grid">
+          <section class="panel" aria-labelledby="documents-title">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">Ledger</p>
+                <h2 id="documents-title">文档列表</h2>
+              </div>
+              <button id="refresh-button" class="ghost-button" type="button">刷新</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>文档</th>
+                    <th>状态</th>
+                    <th>上传人</th>
+                    <th>更新时间</th>
+                  </tr>
+                </thead>
+                <tbody id="documents-body"></tbody>
+              </table>
+            </div>
+            <p id="documents-feedback" class="status-text" aria-live="polite"></p>
+          </section>
+
+          <section class="panel" aria-labelledby="search-title">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">Probe</p>
+                <h2 id="search-title">检索测试</h2>
+              </div>
+            </div>
+            <form id="search-form" class="search-form">
+              <label class="field">
+                <span>查询</span>
+                <textarea id="search-query" rows="4" required></textarea>
+              </label>
+              <label class="field compact">
+                <span>Top K</span>
+                <input id="search-top-k" type="number" min="1" max="20" value="5" />
+              </label>
+              <button id="search-button" class="primary-button" type="submit">检索</button>
+            </form>
+            <p id="search-feedback" class="status-text" aria-live="polite"></p>
+            <ol id="search-results" class="result-list"></ol>
+          </section>
+        </section>
+      </div>
     </main>
     <script src="app.js" defer></script>
   </body>
